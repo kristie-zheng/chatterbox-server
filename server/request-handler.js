@@ -18,6 +18,7 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
+//create a dataStorage obj to be returned with the GET and POST requests
 var dataStorage = {};
 dataStorage.results = [];
 
@@ -31,24 +32,26 @@ var requestHandler = function(request, response) {
   // Documentation for both request and response can be found in the HTTP section at
   // http://nodejs.org/documentation/api/
 
-  // Do some basic logging.
-  //
+
   var headers = defaultCorsHeaders;
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
-  // The outgoing status.
+  // The outgoing status. Default it to "not found 404"
   var statusCode = 404;
+
+  //GET request will set status to 200 and return dataStorage
   if (request.method === 'GET' && request.url.includes('/classes/messages')) {
     statusCode = 200;
     headers['Content-Type'] = 'application/json';
     response.writeHead(statusCode, headers);
-
     response.end(JSON.stringify(dataStorage));
   }
 
+  //POST request will set status to 201 and input the data stream's chunks into dataStorage
+  //returns dataStorage
   if (request.method === 'POST' && request.url.includes('/classes/messages')) {
     statusCode = 201;
     headers['Content-Type'] = 'application/json';
@@ -59,6 +62,7 @@ var requestHandler = function(request, response) {
     );
   }
 
+  //OPTIONS request just sends headers
   if (request.method === 'OPTIONS') {
     statusCode = 204;
     headers['Content-Type'] = 'application/json';
@@ -68,14 +72,12 @@ var requestHandler = function(request, response) {
 
   // See the note below about CORS headers.
 
-  // Tell the client we are sending them plain text.
-  //
-  // You will need to change this if you are sending something
-  // other than plain text, like JSON or HTML.
-  // headers['Content-Type'] = 'text/plain';
+  
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
+  //In case of error, the writeHead function sends back the headers+statusCode
   response.writeHead(statusCode, headers);
+
   // Make sure to always call response.end() - Node may not send
   // anything back to the client until you do. The string you pass to
   // response.end() will be the body of the response - i.e. what shows
