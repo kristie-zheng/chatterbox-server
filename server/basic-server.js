@@ -1,7 +1,7 @@
 /* Import node's http module: */
 var http = require('http');
-var handleRequest = require('./request-handler')
-var jquery = require('../node_modules/jquery')
+var handleRequest = require('./request-handler');
+var jquery = require('../node_modules/jquery');
 
 
 // Every server needs to listen on a port with a unique number. The
