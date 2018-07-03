@@ -73,5 +73,28 @@ describe('server', function() {
     });
   });
 
+  it('should accept OPTIONS requests to /classes/messages', function(done) {
+    var requestParams = {method: 'OPTIONS',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(204);
+      done();
+
+    });
+  });  
+
+  it('should not accept a method not defined in defaultCorsHeaders allowed methods', function(done) {
+    var requestParams = {method: 'PATCH',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+    };
+
+    request(requestParams, function(error, response, body) {
+      expect(response.statusCode).to.equal(404);
+      done();
+
+    });
+  });  
 
 });
