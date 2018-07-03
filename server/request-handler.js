@@ -33,6 +33,7 @@ var requestHandler = function(request, response) {
 
   // Do some basic logging.
   //
+  var headers = defaultCorsHeaders;
   // Adding more logging to your server can be an easy way to get passive
   // debugging help, but you should always be careful about leaving stray
   // console.logs in your code.
@@ -40,29 +41,38 @@ var requestHandler = function(request, response) {
 
   // The outgoing status.
   var statusCode = 404;
-  if (request.method === 'GET' && request.url === '/classes/messages') {
+  if (request.method === 'GET' && request.url.includes('/classes/messages')) {
     statusCode = 200;
-    console.log(JSON.stringify(dataStorage));
+    headers['Content-Type'] = 'application/json';
+    response.writeHead(statusCode, headers);
+
     response.end(JSON.stringify(dataStorage));
   }
 
-  if (request.method === 'POST' && request.url === '/classes/messages') {
+  if (request.method === 'POST' && request.url.includes('/classes/messages')) {
     statusCode = 201;
+    headers['Content-Type'] = 'application/json';
+    response.writeHead(statusCode, headers);
     request.on('data', (chunk) => {
-      console.log('this is the chunk', JSON.parse(chunk));
       dataStorage.results.push(JSON.parse(chunk));
     }).on('end', () => response.end(JSON.stringify(dataStorage))
     );
   }
 
+  if (request.method === 'OPTIONS') {
+    statusCode = 204;
+    headers['Content-Type'] = 'application/json';
+    response.writeHead(statusCode, headers);
+    response.end();
+  }
+
   // See the note below about CORS headers.
-  var headers = defaultCorsHeaders;
 
   // Tell the client we are sending them plain text.
   //
   // You will need to change this if you are sending something
   // other than plain text, like JSON or HTML.
-  headers['Content-Type'] = 'text/plain';
+  // headers['Content-Type'] = 'text/plain';
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   response.writeHead(statusCode, headers);
