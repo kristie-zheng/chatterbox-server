@@ -123,7 +123,24 @@ describe('Node Server Request Listener Function', function() {
     handler.requestHandler(req, res);
     expect(res._responseCode).to.equal(204);
     expect(res._ended).to.equal(true);
- 
+  });
+
+  it('Should return status code 202 on DELETE request', function() {
+    var req = new stubs.request('/classes/messages', 'DELETE');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+    expect(res._responseCode).to.equal(202);
+    expect(res._ended).to.equal(true);
+  });  
+
+  it('Should return status code 200 on PUT request', function() {
+    var req = new stubs.request('/classes/messages', 'PUT');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+    expect(res._responseCode).to.equal(200);
+    expect(res._ended).to.equal(true);
   });
 
 });

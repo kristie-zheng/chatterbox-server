@@ -20,7 +20,6 @@ this file and include it in basic-server.js so that it actually works.
 //
 // Another way to get around this restriction is to serve you chat
 // client from this domain by setting up static file serving.
-
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -80,8 +79,27 @@ var requestHandler = function(request, response) {
     response.end();
   }
 
-
+  //PUT
+  //check dataStorage if the current data's URI exists there, and replace if something's there 
+  //otherwise add the data to the end of the array (like a normal POST)
+  //to acquire the URI we need a dependency called uri.js
+  if (request.method === 'PUT') {
+    statusCode = 200;
+    headers['Content-Type'] = 'application/json';
+    response.writeHead(statusCode, headers);
+    response.end();
+  }
   
+  //DELETE
+  //check dataStorage if the current data's URI exists there, and delete if something's there 
+  //to acquire the URI we need a dependency called uri.js
+  if (request.method === 'DELETE') {
+    statusCode = 202;
+    headers['Content-Type'] = 'application/json';
+    response.writeHead(statusCode, headers);
+    response.end();
+  }
+
   // .writeHead() writes to the request line and headers of the response,
   // which includes the status and all headers.
   //In case of error, the writeHead function sends back the headers+statusCode
@@ -97,6 +115,5 @@ var requestHandler = function(request, response) {
   // node to actually send all the data over to the client.
   response.end(JSON.stringify(dataStorage));
 };
-
 
 exports.requestHandler = requestHandler;
