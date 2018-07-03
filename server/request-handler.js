@@ -18,6 +18,9 @@ var defaultCorsHeaders = {
   'access-control-max-age': 10 // Seconds.
 };
 
+var dataStorage = {};
+dataStorage.results = [];
+
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
   //
@@ -36,8 +39,6 @@ var requestHandler = function(request, response) {
   console.log('Serving request type ' + request.method + ' for url ' + request.url);
 
   // The outgoing status.
-  var dataStorage = {};
-  dataStorage.results = [];
   var statusCode = 404;
   if (request.method === 'GET' && request.url === '/classes/messages') {
     statusCode = 200;
@@ -51,7 +52,8 @@ var requestHandler = function(request, response) {
       console.log('this is the chunk', JSON.parse(chunk));
       dataStorage.results.push(JSON.parse(chunk));
     }).on('end', () => response.end(JSON.stringify(dataStorage))
-    )};
+    );
+  }
 
   // See the note below about CORS headers.
   var headers = defaultCorsHeaders;
